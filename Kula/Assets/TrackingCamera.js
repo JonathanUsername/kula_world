@@ -7,6 +7,8 @@ function Start () {
 function Update () {
   var h = 2;
   var player = GameObject.Find('Ball');
-  this.transform.position = player.transform.position - player.transform.forward * 5;
+  var cameraHeight = new Vector3(0, 1, 0);
+  var cameraBackwardsOffset = player.transform.forward * 5;
+  this.transform.position = player.transform.position + cameraHeight - cameraBackwardsOffset;
   this.transform.LookAt(player.transform);
 }
