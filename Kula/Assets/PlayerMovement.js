@@ -3,7 +3,7 @@
 var speed : float = 0.1;
 var rotationSpeed : float = 1000.0;
 var jumpSpeed : float = 1.0;
-var gravity : float = 1.0;
+var gravity : float;
 
 private var moveDirection : Vector3 = Vector3.zero;
 private var rolling : boolean = false;
@@ -31,7 +31,7 @@ function CoUpdate() {
     else if (Input.GetKeyDown(KeyCode.LeftArrow))
       yield Rotate(Quaternion.Euler(0, -90, 0));
     else if (Input.GetKeyDown(KeyCode.UpArrow) && Input.GetButton('Jump'))
-      yield Move(this.transform.forward + Vector3(0, 1, 0));
+      yield Move(this.transform.forward * 2 + Vector3(0, 1, 0));
     else if (Input.GetKeyDown(KeyCode.UpArrow))
       yield Move(this.transform.forward);
     else if (Input.GetKeyDown(KeyCode.DownArrow))
