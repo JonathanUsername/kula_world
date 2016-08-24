@@ -72,22 +72,15 @@ function CoUpdate() {
   // Apply gravity
   if (direction == 'down') {
     moveDirection += Vector3.down * gravity * Time.deltaTime;
-    // moveDirection.y -= this.transform.position.y + floor.transform.position.y * Time.deltaTime;
   }
-
-  // print(moveDirection);
   
   // Move the controller
   if (!rotating) {
-    // print('moving down');
     controller.Move(moveDirection * Time.deltaTime);
   }
 
-  // print(rotating);
-
-  // var checks = 'edge' + isEdge() + ' rotatable' + isRotatable() + ' isRotatableWall' + isRotatableWall();
+  // var checks = 'pos' + transform.position + ' edge' + isEdge() + ' rotatable' + isRotatable() + ' isRotatableWall' + isRotatableWall();
   // print(checks);
-  // print(transform.position);
 
 }
 
@@ -127,13 +120,15 @@ function MoveOrRotate(distance: Vector3) {
 
   if (rotating) return;
 
-  print('not rotating, moving');
-
   if (e && r && !rw) {
     rotating = true;
-    yield Move(forward);
-    yield Move(down);
-    yield RotateWorld(left, this.transform.position);
+    var pivot = this.transform.position;
+    var corner = this.transform.position + (forward + down)/2;
+    yield Move(forward/2);
+    // yield Move(down);
+    yield RotateWorld(left, corner);
+    yield Move(forward/2);
+    // yield RotateWorld(left, this.transform.position);
   } else if (rw) {
     rotating = true;
     // Rotate backwards if wall, ie. round right axis
@@ -146,12 +141,10 @@ function MoveOrRotate(distance: Vector3) {
 function Move(distance : Vector3) {
   var pt = this.transform;
   var goal = pt.position + distance;
-  print ('moving');
   while (pt.position != goal) {
     pt.position = Vector3.MoveTowards(pt.position, goal, speed * Time.deltaTime);
     yield;
   }
-  print('moved');
 }
 
 function Rotate(rotation : Quaternion) {
@@ -167,14 +160,15 @@ function RotateCube(cube : GameObject, axis: Vector3, point: Vector3, last: bool
   // see: http://answers.unity3d.com/questions/29110/easing-a-rotation-of-rotate-around.html
 
   var rotateAmount : int = 90;
-  var rotateTime : int = 1;
+  var rotateTime : float = 0.5;
   var step : float = 0.0; // non-smoothed
   var rate : float = 1.0/rotateTime; // amount to increase non-smooth step by
   var smoothStep : float = 0.0; // smooth step this time
   var lastStep : float = 0.0; // smooth step last time
 
   var goal = Quaternion.Euler(axis * rotateAmount) * cube.transform.rotation;
-  while (cube.transform.rotation != goal) {
+  print('entering rotate while loop');
+  while (step < 1.0) {
     step += Time.deltaTime * rate; // increase the step
     smoothStep = Mathf.SmoothStep(0.0, 1.0, step); // get the smooth step
     cube.transform.RotateAround(point, axis, rotateAmount * (smoothStep - lastStep));
@@ -182,27 +176,25 @@ function RotateCube(cube : GameObject, axis: Vector3, point: Vector3, last: bool
     yield;
   }
 
-  // finish any left over
-  if (step > 1.0) 
+  if (step > 1.0) {
     transform.RotateAround(point, axis, rotateAmount * (1.0 - lastStep));
+  }
 
   print(last);
   // check for last coroutine to have finished
   if (last) {
-    print('turning off rotating');
     rotating = false;
   }
 }
 
 function RotateWorld(axis : Vector3, point : Vector3) {
-  print('rotating world');
   var cubes = GameObject.FindGameObjectsWithTag('Rotates');
   for (var i : int = 0; i < cubes.Length; i++) {
+    print(i);
     var last = i == cubes.Length - 1;
     RotateCube(cubes[i], axis, point, last);
   }
   while (rotating) yield;
-  print('yielding rotate');
 }
 
 function Update () {
