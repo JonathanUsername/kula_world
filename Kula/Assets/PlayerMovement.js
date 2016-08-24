@@ -83,7 +83,7 @@ function CoUpdate() {
     controller.Move(moveDirection * Time.deltaTime);
   }
 
-  var checks = 'edge' + isEdge() + ' rotatable' + isRotatable() + ' canRotate' + canRotate;
+  var checks = 'edge' + isEdge() + ' rotatable' + isRotatable() + ' isRotatableWall' + isRotatableWall();
   print(checks);
   print(transform.position);
 
@@ -104,20 +104,32 @@ function isRotatable() {
   return !rc1 && !rc2;
 }
 
+function isRotatableWall() {
+  // We need to test if forward but !left + fwd && !right + fwd. 
+  var dist = 1;
+  var r = Physics.Raycast(transform.position + right, forward, dist);
+  var l = Physics.Raycast(transform.position + left, forward, dist);
+  var f = Physics.Raycast(transform.position, forward, dist);
+  return f && !r && !l;
+}
+
 function OnControllerColliderHit(hit : ControllerColliderHit) {
   // print('hit');
   floor = hit.gameObject;
 }
 
 function MoveOrRotate(distance: Vector3) {
-  if (isEdge() && isRotatable()) {
-    rotating = true;
+  var e = isEdge();
+  var r = isRotatable();
+  var rw = isRotatableWall();
+
+  if (e && r && !rw) {
     this.transform.position += forward + down;
-    // yield Move(forward);
-    // yield Move(down);
     yield RotateWorld(left, this.transform.position);
-    rotating = false;
-  } else if (!isEdge()) {
+  } else if (rw) {
+    // Rotate backwards if wall, ie. round right axis
+    yield RotateWorld(right, this.transform.position);
+  } else if (!e) {
     yield Move(distance);
   }
 }
@@ -140,7 +152,12 @@ function Rotate(rotation : Quaternion) {
   }
 }
 
+function RotateCube(cube : GameObject) {
+  
+}
+
 function RotateWorld(axis : Vector3, point : Vector3) {
+  rotating = true;
   print('rotating');
   var cubes = GameObject.FindGameObjectsWithTag('Rotates');
   for (var cube in cubes) {
@@ -151,6 +168,7 @@ function RotateWorld(axis : Vector3, point : Vector3) {
       cube.transform.RotateAround(point, axis, 90);
     // }
   }
+  rotating = false;
   yield;
 }
 
