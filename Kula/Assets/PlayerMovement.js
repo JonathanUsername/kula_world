@@ -38,6 +38,9 @@ function Start () {
 
 function CoUpdate() {
 
+  if (Win.gameObject.activeSelf)
+    return;
+
   // Set utility direction properties
   forward = transform.forward;
   back = transform.forward * -1;
@@ -196,7 +199,10 @@ function RotateCube(cube : GameObject, axis: Vector3, point: Vector3, last: bool
   while (step < 1.0) {
     step += Time.deltaTime * rate; // increase the step
     smoothStep = Mathf.SmoothStep(0.0, 1.0, step); // get the smooth step
-    cube.transform.RotateAround(point, axis, rotateAmount * (smoothStep - lastStep));
+
+    if (cube) // Check it still exists
+      cube.transform.RotateAround(point, axis, rotateAmount * (smoothStep - lastStep));
+
     lastStep = smoothStep; // store the smooth step
     yield;
   }

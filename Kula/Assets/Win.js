@@ -17,7 +17,7 @@ function Update () {
 
   if (restartTimer >= restartDelay) {
     var s = SceneManager.GetActiveScene().buildIndex;
-    SceneManager.LoadScene(s);
+    SceneManager.LoadScene(s + 1);
   }
 }
 

@@ -15,6 +15,7 @@ function OnTriggerEnter (other : Collider) {
     end = GameObject.Find('End');
     end.GetComponent.<Renderer>().material.color = Color.green;
     end.GetComponent.<End>().Activate();
-    Destroy(this.gameObject);
+
+    Destroy(gameObject);
   }
 }
