@@ -49,7 +49,7 @@ function CoUpdate() {
   // if (!controller.isGrounded) print('not grounded!');
   // else print('grounded');
 
-  if (true) {
+  if (controller.isGrounded) {
     if (Input.GetButton ('Jump')) {
       jumpVec = Vector3(0, jumpSpeed, 0);
     }
@@ -114,8 +114,23 @@ function isRotatableWall() {
   return f && !r && !l;
 }
 
+function centreBall() {
+  print('centring' + transform.position);
+  var pt = transform.position;
+  transform.position = new Vector3(
+    Mathf.Round(pt.x), 
+    Mathf.Round(pt.y), 
+    Mathf.Round(pt.z)
+  );
+  // Check we're grounded with a half-unit raycast
+  var ground = Physics.Raycast(transform.position, down, 0.5);
+  if (!ground) {
+    transform.position.
+  }
+  print('centred' + transform.position);
+}
+
 function OnControllerColliderHit(hit : ControllerColliderHit) {
-  // print('hit');
   floor = hit.gameObject;
 }
 
@@ -142,13 +157,13 @@ function MoveOrRotate(distance: Vector3) {
   } else if (!e) {
     yield Move(distance);
   }
+
+  centreBall();
 }
 
 function Move(distance : Vector3) {
   var pt = this.transform;
   var goal = pt.position + distance;
-  print(goal);
-  print(pt.position);
   while (pt.position != goal) {
     pt.position = Vector3.MoveTowards(pt.position, goal, speed * Time.deltaTime);
     yield;
@@ -175,7 +190,6 @@ function RotateCube(cube : GameObject, axis: Vector3, point: Vector3, last: bool
   var lastStep : float = 0.0; // smooth step last time
 
   var goal = Quaternion.Euler(axis * rotateAmount) * cube.transform.rotation;
-  print('entering rotate while loop');
   while (step < 1.0) {
     step += Time.deltaTime * rate; // increase the step
     smoothStep = Mathf.SmoothStep(0.0, 1.0, step); // get the smooth step
@@ -188,7 +202,6 @@ function RotateCube(cube : GameObject, axis: Vector3, point: Vector3, last: bool
     transform.RotateAround(point, axis, rotateAmount * (1.0 - lastStep));
   }
 
-  print(last);
   // check for last coroutine to have finished
   if (last) {
     rotating = false;
@@ -198,7 +211,6 @@ function RotateCube(cube : GameObject, axis: Vector3, point: Vector3, last: bool
 function RotateWorld(axis : Vector3, point : Vector3) {
   var cubes = GameObject.FindGameObjectsWithTag('Rotates');
   for (var i : int = 0; i < cubes.Length; i++) {
-    print(i);
     var last = i == cubes.Length - 1;
     RotateCube(cubes[i], axis, point, last);
   }
