@@ -15,6 +15,9 @@ var left : Vector3;
 var up : Vector3;
 var down : Vector3;
 
+var GameOver : GameOver;
+var Win : Win;
+
 private var moveDirection : Vector3 = Vector3.zero;
 private var rolling : boolean = false;
 
@@ -22,6 +25,7 @@ private var rb: Rigidbody;
 private var direction = 'down';
 private var canRotate = true;
 private var rotating = false;
+private var fallingCount : float = 0;
 
 
 
@@ -50,6 +54,7 @@ function CoUpdate() {
   // else print('grounded');
 
   if (controller.isGrounded) {
+    fallingCount = 0;
     if (Input.GetButton ('Jump')) {
       jumpVec = Vector3(0, jumpSpeed, 0);
     }
@@ -76,7 +81,12 @@ function CoUpdate() {
   
   // Move the controller
   if (!rotating) {
+    fallingCount += Time.deltaTime * 1;
     controller.Move(moveDirection * Time.deltaTime);
+  }
+
+  if (fallingCount > 3) {
+    GameOver.TriggerGameOver();
   }
 
   // var checks = 'pos' + transform.position + ' edge' + isEdge() + ' rotatable' + isRotatable() + ' isRotatableWall' + isRotatableWall();

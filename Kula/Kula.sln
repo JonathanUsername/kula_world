@@ -1,14 +1,18 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2008
 
-
+Project("{E7AB46DD-1A11-75C5-8239-FA450E501186}") = "Kula", "Assembly-CSharp.csproj", "{3CD1833F-3BF0-C299-4E3E-53EE5732EA4E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-
+		{3CD1833F-3BF0-C299-4E3E-53EE5732EA4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CD1833F-3BF0-C299-4E3E-53EE5732EA4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CD1833F-3BF0-C299-4E3E-53EE5732EA4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CD1833F-3BF0-C299-4E3E-53EE5732EA4E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
