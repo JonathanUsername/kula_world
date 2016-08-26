@@ -58,7 +58,7 @@ function CoUpdate() {
       yield Rotate(Quaternion.Euler(0, 90, 0));
     else if (Input.GetKeyDown(KeyCode.LeftArrow))
       yield Rotate(Quaternion.Euler(0, -90, 0));
-    else if (Input.GetKeyDown(KeyCode.UpArrow) && Input.GetButton('Jump'))
+    else if (Input.GetKeyDown(KeyCode.UpArrow) && Input.GetButton('Jump') && canJump())
       yield Move(forward * 2 + Vector3(0, 1, 0));
     else if (Input.GetKeyDown(KeyCode.UpArrow))
       yield MoveOrRotate(forward);
@@ -82,6 +82,12 @@ function CoUpdate() {
   // var checks = 'pos' + transform.position + ' edge' + isEdge() + ' rotatable' + isRotatable() + ' isRotatableWall' + isRotatableWall();
   // print(checks);
 
+}
+
+function canJump() {
+  var dist = 2;
+  var rc = Physics.Raycast(transform.position, (forward * 2) + up, dist);
+  return !rc;
 }
 
 function isEdge() {
@@ -141,6 +147,8 @@ function MoveOrRotate(distance: Vector3) {
 function Move(distance : Vector3) {
   var pt = this.transform;
   var goal = pt.position + distance;
+  print(goal);
+  print(pt.position);
   while (pt.position != goal) {
     pt.position = Vector3.MoveTowards(pt.position, goal, speed * Time.deltaTime);
     yield;
