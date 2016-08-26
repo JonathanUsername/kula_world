@@ -115,19 +115,12 @@ function isRotatableWall() {
 }
 
 function centreBall() {
-  print('centring' + transform.position);
   var pt = transform.position;
   transform.position = new Vector3(
     Mathf.Round(pt.x), 
     Mathf.Round(pt.y), 
     Mathf.Round(pt.z)
   );
-  // Check we're grounded with a half-unit raycast
-  var ground = Physics.Raycast(transform.position, down, 0.5);
-  if (!ground) {
-    transform.position.
-  }
-  print('centred' + transform.position);
 }
 
 function OnControllerColliderHit(hit : ControllerColliderHit) {
