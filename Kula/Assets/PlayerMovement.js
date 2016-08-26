@@ -167,7 +167,7 @@ function RotateCube(cube : GameObject, axis: Vector3, point: Vector3, last: bool
   // see: http://answers.unity3d.com/questions/29110/easing-a-rotation-of-rotate-around.html
 
   var rotateAmount : int = 90;
-  var rotateTime : int = 1;
+  var rotateTime : float = 0.5;
   var step : float = 0.0; // non-smoothed
   var rate : float = 1.0/rotateTime; // amount to increase non-smooth step by
   var smoothStep : float = 0.0; // smooth step this time
