@@ -5,7 +5,8 @@ public var Win : Win;
 private var activated = false;
 
 function Start () {
-
+  var menu = GameObject.Find('MenuController');
+  Win = menu.transform.GetChild(1).GetComponent.<Win>();
 }
 
 function Update () {

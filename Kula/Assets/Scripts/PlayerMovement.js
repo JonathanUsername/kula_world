@@ -29,6 +29,10 @@ private var fallingCount : float = 0;
 private var fallingSecondsAllowed : int = 3;
 
 function Start () {
+  var menu = GameObject.Find('MenuController');
+  GameOver = menu.transform.GetChild(0).GetComponent.<GameOver>();
+  Win = menu.transform.GetChild(1).GetComponent.<Win>();
+
   while(true) yield CoUpdate();
 }
 
@@ -164,12 +168,12 @@ function MoveOrRotate(distance: Vector3) {
 function Move(distance : Vector3) {
   var pt = this.transform;
   var goal = pt.position + distance;
-  // RotateCube(pt.GetChild(0).gameObject, right, pt.position, false);
   while (pt.position != goal) {
     pt.position = Vector3.MoveTowards(pt.position, goal, speed * Time.deltaTime);
+
+    // Rotate bomb parts
     pt.GetChild(0).transform.RotateAround(pt.position, right, 90 * speed * Time.deltaTime);
     pt.GetChild(1).transform.RotateAround(pt.position, right, 90 * speed * Time.deltaTime);
-    // pt.GetChild(1).transform.RotateAround(pt.position, right, Vector3.Distance(goal, pt.position) * 90 * Time.deltaTime);
     yield;
   }
 }
@@ -183,7 +187,7 @@ function Rotate(rotation : Quaternion) {
   }
 }
 
-function RotateCube(cube : GameObject, axis: Vector3, point: Vector3, last: boolean) {
+function RotateLevel(cube : GameObject, axis: Vector3, point: Vector3) {
   // see: http://answers.unity3d.com/questions/29110/easing-a-rotation-of-rotate-around.html
 
   var rotateAmount : int = 90;
@@ -209,18 +213,12 @@ function RotateCube(cube : GameObject, axis: Vector3, point: Vector3, last: bool
     transform.RotateAround(point, axis, rotateAmount * (1.0 - lastStep));
   }
 
-  // check for last coroutine to have finished
-  if (last) {
-    rotating = false;
-  }
+  rotating = false;
 }
 
 function RotateWorld(axis : Vector3, point : Vector3) {
-  var cubes = GameObject.FindGameObjectsWithTag('Rotates');
-  for (var i : int = 0; i < cubes.Length; i++) {
-    var last = i == cubes.Length - 1;
-    RotateCube(cubes[i], axis, point, last);
-  }
+  var level = GameObject.Find('LevelController');
+  RotateLevel(level, axis, point);
   while (rotating) yield;
 }
 
