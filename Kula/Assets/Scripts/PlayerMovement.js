@@ -6,7 +6,7 @@ var speed : float = 0.1;
 var rotationSpeed : float = 1000.0;
 var jumpSpeed : float = 1.0;
 var gravity : float;
-var floor : GameObject;
+// var floor : GameObject;
 
 var forward : Vector3;
 var back : Vector3;
@@ -22,18 +22,14 @@ private var moveDirection : Vector3 = Vector3.zero;
 private var rolling : boolean = false;
 
 private var rb: Rigidbody;
-private var direction = 'down';
 private var canRotate = true;
 private var rotating = false;
+
 private var fallingCount : float = 0;
-
-
-
-while(true) yield CoUpdate();
+private var fallingSecondsAllowed : int = 3;
 
 function Start () {
-
-
+  while(true) yield CoUpdate();
 }
 
 function CoUpdate() {
@@ -66,29 +62,27 @@ function CoUpdate() {
       yield Rotate(Quaternion.Euler(0, 90, 0));
     else if (Input.GetKeyDown(KeyCode.LeftArrow))
       yield Rotate(Quaternion.Euler(0, -90, 0));
-    else if (Input.GetKeyDown(KeyCode.UpArrow) && Input.GetButton('Jump') && canJump())
+    else if (Input.GetButton('Jump') && canJump())
       yield Move(forward * 2 + Vector3(0, 1, 0));
     else if (Input.GetKeyDown(KeyCode.UpArrow))
       yield MoveOrRotate(forward);
-    else if (Input.GetKeyDown(KeyCode.DownArrow))
-      yield MoveOrRotate(forward * -1);
+    // else if (Input.GetKeyDown(KeyCode.DownArrow))
+    //   yield MoveOrRotate(forward * -1);
     else 
       yield;
 
   }
 
   // Apply gravity
-  if (direction == 'down') {
-    moveDirection += Vector3.down * gravity * Time.deltaTime;
-  }
+  moveDirection += Vector3.down * gravity * Time.deltaTime;
   
   // Move the controller
   if (!rotating) {
-    fallingCount += Time.deltaTime * 1;
+    fallingCount += Time.deltaTime;
     controller.Move(moveDirection * Time.deltaTime);
   }
 
-  if (fallingCount > 3) {
+  if (fallingCount > fallingSecondsAllowed) {
     GameOver.TriggerGameOver();
   }
 
@@ -136,9 +130,9 @@ function centreBall() {
   );
 }
 
-function OnControllerColliderHit(hit : ControllerColliderHit) {
-  floor = hit.gameObject;
-}
+// function OnControllerColliderHit(hit : ControllerColliderHit) {
+//   floor = hit.gameObject;
+// }
 
 function MoveOrRotate(distance: Vector3) {
   var e = isEdge();
@@ -170,8 +164,12 @@ function MoveOrRotate(distance: Vector3) {
 function Move(distance : Vector3) {
   var pt = this.transform;
   var goal = pt.position + distance;
+  // RotateCube(pt.GetChild(0).gameObject, right, pt.position, false);
   while (pt.position != goal) {
     pt.position = Vector3.MoveTowards(pt.position, goal, speed * Time.deltaTime);
+    pt.GetChild(0).transform.RotateAround(pt.position, right, 90 * speed * Time.deltaTime);
+    pt.GetChild(1).transform.RotateAround(pt.position, right, 90 * speed * Time.deltaTime);
+    // pt.GetChild(1).transform.RotateAround(pt.position, right, Vector3.Distance(goal, pt.position) * 90 * Time.deltaTime);
     yield;
   }
 }

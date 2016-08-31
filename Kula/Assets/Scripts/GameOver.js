@@ -2,7 +2,8 @@
 
 import UnityEngine.SceneManagement;
 
-public var restartDelay : float = 4;
+public var restartDelay : float;
+
 private var restartTimer : float = 0;
 private var started = false;
 

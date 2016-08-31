@@ -10,7 +10,7 @@ function Update () {
 }
 
 function OnTriggerEnter (other : Collider) {
-  if(other.gameObject.name == 'Ball') {
+  if(other.gameObject.name == 'Bomb') {
     var end : GameObject;
     end = GameObject.Find('End');
     end.GetComponent.<Renderer>().material.color = Color.green;
