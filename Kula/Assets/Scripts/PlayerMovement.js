@@ -38,8 +38,8 @@ function Start () {
 
 function CoUpdate() {
 
-  if (Win.gameObject.activeSelf)
-    return;
+  if (Win.gameObject.activeSelf || GameOver.gameObject.activeSelf)
+    return; // Don't allow ball to move if win or gameover is going on
 
   // Set utility direction properties
   forward = transform.forward;

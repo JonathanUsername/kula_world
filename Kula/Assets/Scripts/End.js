@@ -18,7 +18,6 @@ function Activate () {
 }
 
 function OnTriggerEnter (other : Collider) {
-  print('col');
   if(activated && other.gameObject.name == 'Bomb') {
     Win.TriggerWin();
   }
