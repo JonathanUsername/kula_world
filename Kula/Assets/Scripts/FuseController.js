@@ -1,5 +1,7 @@
 ﻿#pragma strict
 
+import UnityEngine.UI;
+
 public var fuseTimeSecs : int;
 public var frequency : int;
 
@@ -8,29 +10,42 @@ private var fuseMovementStep : float;
 private var fullyMovedIn : Vector3;
 private var fuse : GameObject;
 private var bomb : GameObject;
+private var timer : GameObject;
+private var txt : Text;
 private var GameOver;
+private var deepRed : Color = Vector4(0.7,0,0,1);
 
 function Start () {
+  print(fuseTimeSecs);
   bomb = bomb.Find('Bomb');
   fuse = bomb.Find('Fuse');
+  timer = this.gameObject.Find('TimerText');
   fullyMovedIn = fuse.transform.position + fuse.transform.up * -0.3;
   fuseMovementStep = parseFloat(frequency) / parseFloat(fuseTimeSecs); // OMG WHAT, can't get a float from dividing two ints without parsefloat?!?!?
   InvokeRepeating('MoveFuseIn', frequency, frequency);
 }
 
 function Update () {
+  txt = timer.GetComponent.<Text>();
 
+  if (fuseTimeSecs < 10)
+    txt.color = deepRed;
+
+  if (fuseTimeSecs >= 0)
+    txt.text = fuseTimeSecs.ToString();
 }
 
 function MoveFuseIn() {
   var pt = fuse.transform.position;
 
-  fuseTimeSecs -= 1;
   if (fuseTimeSecs < 0) {
     Explode();
     CancelInvoke();
   }
+
+  fuseTimeSecs -= 1;
   fuse.transform.position = pt - fuse.transform.up * 0.3 * fuseMovementStep;
+
 }
 
 function Explode() {
